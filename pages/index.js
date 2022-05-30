@@ -1,11 +1,5 @@
-import MainContainer from '../components/MainContainer';
-
 const index = () => {
-  return (
-    <MainContainer>
-      <div>index</div>
-    </MainContainer>
-  );
+  return <div>index</div>;
 };
 
 export default index;
