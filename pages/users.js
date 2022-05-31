@@ -1,66 +1,37 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import axios from 'axios';
+import { useCallback, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import MainContainer from '../components/MainContainer';
 import User from '../components/User';
 
-function Users({ usersData }) {
-  const [users, setUsers] = useState([...usersData]);
+import { setSortBy, setSearchByName } from '../redux/actions/filters';
+import { fetchUsers } from '../redux/actions/users';
 
-  const headerTitle = ['ID', 'Name', 'Username', 'E-mail', 'Phone', 'Website', 'Company'];
-  const [sortBy, setSortBy] = useState(null);
-
-  const [sortByOrder, setSortByOrder] = useState(false);
+function Users() {
+  const dispatch = useDispatch();
+  const items = useSelector(({ users }) => users.items);
+  const { sortBy, searchByName } = useSelector(({ filters }) => filters);
+  const headerTitle = [
+    { title: 'ID', key: 'id' },
+    { title: 'Name', key: 'name' },
+    { title: 'Username', key: 'username' },
+    { title: 'E-mail', key: 'email' },
+    { title: 'Phone', key: 'phone' },
+    { title: 'Website', key: 'website' },
+    { title: 'Company', key: 'company.name' },
+  ];
 
   useEffect(() => {
-    switch (sortBy) {
-      case 'ID':
-        sortByCategory('id');
-        break;
-      case 'Name':
-        sortByCategory('name');
-        break;
-      case 'Username':
-        sortByCategory('username');
-        break;
-      case 'E-mail':
-        sortByCategory('email');
-        break;
-      case 'Phone':
-        sortByCategory('phone');
-        break;
-      case 'Website':
-        sortByCategory('website');
-        break;
-      case 'Company':
-        sortByCategory('company.name');
-        break;
+    dispatch(fetchUsers(sortBy, searchByName));
+  }, [sortBy, searchByName]);
 
-      default:
-        break;
-    }
-  }, [sortBy, sortByOrder]);
+  const onSelectSortType = useCallback((type) => {
+    dispatch(setSortBy(type));
+  }, []);
 
-  const sortByCategory = async (sort) => {
-    const users = await axios.get(
-      `https://jsonplaceholder.typicode.com/users?_sort=${sort}&_order=${
-        sortByOrder ? 'asc' : 'desc'
-      }`,
-    );
-
-    const usersData = users.data;
-
-    setUsers(usersData);
-  };
-
-  const serachByName = async (name) => {
-    const users = await axios.get(`https://jsonplaceholder.typicode.com/users?name_like=${name}`);
-
-    const usersData = users.data;
-
-    setUsers(usersData);
-  };
+  const onChangeSearchByName = useCallback((name) => {
+    dispatch(setSearchByName(name));
+  }, []);
 
   return (
     <MainContainer>
@@ -69,41 +40,33 @@ function Users({ usersData }) {
           <input
             type="text"
             placeholder="Search by name"
-            onChange={(e) => serachByName(e.target.value)}
+            onChange={(e) => {
+              onChangeSearchByName(e.target.value);
+            }}
           />
-
-          {!users.length ? (
-            <div>Users not found</div>
-          ) : (
-            <>
-              <button onClick={() => setSortByOrder(!sortByOrder)}>
-                {sortByOrder ? 'Сортировать по убыванию' : 'Сортировать по возрастанию'}
-              </button>
-              <table className="usersTable">
-                <thead>
-                  <tr className="usersTable__header">
-                    {headerTitle.map((title, i) => (
-                      <td
-                        key={i}
-                        className={
-                          sortBy === title
-                            ? 'usersTable__title usersTable__title-active'
-                            : 'usersTable__title'
-                        }
-                        onClick={() => setSortBy(title)}>
-                        {title}
-                      </td>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user) => (
-                    <User key={user.id} {...user} />
-                  ))}
-                </tbody>
-              </table>
-            </>
-          )}
+          <table className="usersTable">
+            <thead>
+              <tr className="usersTable__header">
+                {headerTitle.map((sorter, i) => (
+                  <td
+                    key={i}
+                    className={
+                      sortBy === sorter.key
+                        ? 'usersTable__title usersTable__title-active'
+                        : 'usersTable__title'
+                    }
+                    onClick={() => onSelectSortType(sorter.key)}>
+                    {sorter.title}
+                  </td>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((user) => (
+                <User key={user.id} {...user} />
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </MainContainer>
@@ -111,12 +74,3 @@ function Users({ usersData }) {
 }
 
 export default Users;
-
-export async function getServerSideProps() {
-  const users = await axios.get(`https://jsonplaceholder.typicode.com/users`);
-
-  const usersData = users.data;
-  return {
-    props: { usersData },
-  };
-}

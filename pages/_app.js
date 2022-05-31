@@ -1,5 +1,9 @@
 import '../styles.scss';
 
-export default function MyApp({ Component, pageProps }) {
+import { wrapper } from '../redux/store';
+
+const MyApp = ({ Component, pageProps }) => {
   return <Component {...pageProps} />;
-}
+};
+
+export default wrapper.withRedux(MyApp);
