@@ -5,14 +5,14 @@ import MainContainer from '../components/MainContainer';
 import User from '../components/User';
 import Loader from '../components/Loader';
 
-import { setSortBy, setSearchByName } from '../redux/actions/filters';
+import { setSortBy, setSearchByName, setOrder } from '../redux/actions/filters';
 import { fetchUsers } from '../redux/actions/users';
 
 function Users() {
   const dispatch = useDispatch();
   const items = useSelector(({ users }) => users.items);
   const isLoaded = useSelector(({ users }) => users.isLoaded);
-  const { sortBy, searchByName } = useSelector(({ filters }) => filters);
+  const { sortBy, searchByName, order } = useSelector(({ filters }) => filters);
   const headerTitle = [
     { title: 'ID', key: 'id' },
     { title: 'Name', key: 'name' },
@@ -24,8 +24,8 @@ function Users() {
   ];
 
   useEffect(() => {
-    dispatch(fetchUsers(sortBy, searchByName));
-  }, [sortBy, searchByName]);
+    dispatch(fetchUsers(sortBy, searchByName, order));
+  }, [sortBy, searchByName, order]);
 
   const onSelectSortType = (type) => {
     dispatch(setSortBy(type));
@@ -50,6 +50,9 @@ function Users() {
                   onChangeSearchByName(e.target.value);
                 }}
               />
+              <button onClick={() => dispatch(setOrder(!order))}>
+                {order ? 'Сортировать по убыванию' : 'Сортировать по возрастанию'}
+              </button>
               {!items.length ? (
                 'Users not found'
               ) : (

@@ -8,3 +8,10 @@ export function setSearchByName(name) {
     payload: name,
   };
 }
+
+export function setOrder(type) {
+  return {
+    type: 'SET_ORDER',
+    payload: type,
+  };
+}

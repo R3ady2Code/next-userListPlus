@@ -7,14 +7,14 @@ export const setLoaded = (payload) => {
   };
 };
 
-export const fetchUsers = (sortBy, searchByName) => (dispatch) => {
+export const fetchUsers = (sortBy, searchByName, order) => (dispatch) => {
   dispatch(setLoaded(false));
   try {
     axios
       .get(
-        `https://jsonplaceholder.typicode.com/users?_sort=${sortBy}&name_like=${
-          searchByName ? searchByName : ''
-        }`,
+        `https://jsonplaceholder.typicode.com/users?_sort=${sortBy}&_order=${
+          order ? 'asc' : 'desc'
+        }&name_like=${searchByName ? searchByName : ''}`,
       )
       .then(({ data }) => {
         dispatch(setUsers(data));
