@@ -1,11 +1,11 @@
 const initialState = {
   sortBy: 'id',
-  serachByName: ' ',
+  searchByName: '',
 };
 
 const filters = (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_CORT_BY':
+    case 'SET_SORT_BY':
       return {
         ...state,
         sortBy: action.payload,
@@ -14,7 +14,7 @@ const filters = (state = initialState, action) => {
     case 'SET_SEARCH_BY_NAME':
       return {
         ...state,
-        serachByName: action.payload,
+        searchByName: action.payload,
       };
 
     default:
