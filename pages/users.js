@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import MainContainer from '../components/MainContainer';
@@ -23,6 +23,8 @@ function Users() {
     { title: 'Company', key: 'company.name' },
   ];
 
+  const [nameForSearch, setNameForSearch] = useState('');
+
   useEffect(() => {
     dispatch(fetchUsers(sortBy, searchByName, order));
   }, [sortBy, searchByName, order]);
@@ -31,8 +33,17 @@ function Users() {
     dispatch(setSortBy(type));
   };
 
-  const onChangeSearchByName = (name) => {
-    dispatch(setSearchByName(name));
+  const onChangeSearchByName = (e) => {
+    e.preventDefault();
+    setNameForSearch(e.target.value);
+  };
+
+  const onBlurSearchByName = () => {
+    dispatch(setSearchByName(nameForSearch));
+  };
+
+  const onKeyDownSearchByName = (e) => {
+    e.key === 'Enter' && onBlurSearchByName();
   };
 
   return (
@@ -44,11 +55,10 @@ function Users() {
               <input
                 type="text"
                 placeholder="Search by name"
-                value={searchByName}
-                autoFocus
-                onChange={(e) => {
-                  onChangeSearchByName(e.target.value);
-                }}
+                value={nameForSearch}
+                onKeyPress={(e) => onKeyDownSearchByName(e)}
+                onBlur={onBlurSearchByName}
+                onChange={onChangeSearchByName}
               />
               <button onClick={() => dispatch(setOrder(!order))}>
                 {order ? 'Сортировать по убыванию' : 'Сортировать по возрастанию'}
