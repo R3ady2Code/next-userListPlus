@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 import MainContainer from '../../components/MainContainer';
@@ -10,28 +10,13 @@ function PostsProfile({ postsByUser, id }) {
 
   const [posts, setPosts] = useState(postsByUser);
 
-  const onClickSort = (sort) => {
+  const onClickSort = async (sort) => {
     setActiveSort(sort);
+    const postsData = await axios.get(
+      `https://jsonplaceholder.typicode.com/posts?userId=${id}&_sort=${sort}`,
+    );
+    setPosts(postsData.data);
   };
-
-  useEffect(() => {
-    if (activeSort === 'title') {
-      setPosts(
-        [...posts].sort((a, b) => {
-          if (a.title.toLowerCase() < b.title.toLowerCase()) return -1;
-          if (a.title.toLowerCase() > b.title.toLowerCase()) return 1;
-        }),
-      );
-    }
-    if (activeSort === 'body') {
-      setPosts(
-        [...posts].sort((a, b) => {
-          if (a.body.toLowerCase() < b.body.toLowerCase()) return -1;
-          if (a.body.toLowerCase() > b.body.toLowerCase()) return 1;
-        }),
-      );
-    }
-  }, [activeSort]);
 
   return (
     <MainContainer>
@@ -40,9 +25,11 @@ function PostsProfile({ postsByUser, id }) {
           <h2>All posts by User ID{id}</h2>
           <div className="postProfile__sortBy">
             <p>Sort by: </p>
-            {sorts.map((sort) => (
+            {sorts.map((sort, i) => (
               <button
+                key={i}
                 className={sort === activeSort ? 'active' : ''}
+                disabled={sort === activeSort}
                 onClick={() => onClickSort(sort)}>
                 {sort}
               </button>
@@ -61,8 +48,10 @@ function PostsProfile({ postsByUser, id }) {
 
 export default PostsProfile;
 
-export async function getServerSideProps({ query: { id } }) {
-  const postsByUser = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${id}`);
+export async function getServerSideProps({ query: { id, sortBy } }) {
+  const postsByUser = await axios.get(
+    `https://jsonplaceholder.typicode.com/posts?userId=${id}&_sort=${sortBy}`,
+  );
 
   return {
     props: { postsByUser: postsByUser.data, id },
