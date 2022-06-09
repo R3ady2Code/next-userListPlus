@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 
 import { setSortBy, setSearchByName, setOrder } from '../redux/actions/filters';
 import { fetchUsers } from '../redux/actions/users';
+import { Button } from '../components/Button';
 
 function Users() {
   const dispatch = useDispatch();
@@ -38,12 +39,12 @@ function Users() {
     setNameForSearch(e.target.value);
   };
 
-  const onBlurSearchByName = () => {
+  const onSearchByName = () => {
     dispatch(setSearchByName(nameForSearch));
   };
 
   const onKeyDownSearchByName = (e) => {
-    e.key === 'Enter' && onBlurSearchByName();
+    e.key === 'Enter' && onSearchByName();
   };
 
   return (
@@ -52,17 +53,20 @@ function Users() {
         <div className="usersTableContainer">
           {isLoaded ? (
             <>
-              <input
-                type="text"
-                placeholder="Search by name"
-                value={nameForSearch}
-                onKeyPress={(e) => onKeyDownSearchByName(e)}
-                onBlur={onBlurSearchByName}
-                onChange={onChangeSearchByName}
-              />
-              <button onClick={() => dispatch(setOrder(!order))}>
+              <div className="searchContainer">
+                <input
+                  type="text"
+                  placeholder="Search by name"
+                  value={nameForSearch}
+                  onKeyPress={(e) => onKeyDownSearchByName(e)}
+                  onChange={onChangeSearchByName}
+                />
+                <Button onClick={onSearchByName}>Поиск</Button>
+              </div>
+
+              <Button onClick={() => dispatch(setOrder(!order))}>
                 {order ? 'Сортировать по убыванию' : 'Сортировать по возрастанию'}
-              </button>
+              </Button>
               {!items.length ? (
                 'Users not found'
               ) : (

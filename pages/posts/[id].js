@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import MainContainer from '../../components/MainContainer';
 import UserPost from '../../components/UserPost';
+import { Button } from '../../components/Button';
 
 function PostsProfile({ postsByUser, id }) {
   const sorts = ['title', 'body'];
@@ -26,13 +27,13 @@ function PostsProfile({ postsByUser, id }) {
           <div className="postProfile__sortBy">
             <p>Sort by: </p>
             {sorts.map((sort, i) => (
-              <button
+              <Button
                 key={i}
-                className={sort === activeSort ? 'active' : ''}
+                btnClass={sort === activeSort ? 'btnUI active' : 'btnUI'}
                 disabled={sort === activeSort}
                 onClick={() => onClickSort(sort)}>
                 {sort}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
