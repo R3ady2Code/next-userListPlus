@@ -26,6 +26,12 @@ function Users() {
 
   const [nameForSearch, setNameForSearch] = useState('');
 
+  //debagging to empty search
+  useEffect(() => {
+    setNameForSearch('');
+    onSearchByName();
+  }, []);
+
   useEffect(() => {
     dispatch(fetchUsers(sortBy, searchByName, order));
   }, [sortBy, searchByName, order]);
