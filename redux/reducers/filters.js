@@ -2,6 +2,7 @@ const initialState = {
   sortBy: 'id',
   searchByName: '',
   order: true,
+  searchByTitle: '',
 };
 
 const filters = (state = initialState, action) => {
@@ -16,6 +17,12 @@ const filters = (state = initialState, action) => {
       return {
         ...state,
         searchByName: action.payload,
+      };
+
+    case 'SET_SEARCH_BY_TITLE':
+      return {
+        ...state,
+        searchByTitle: action.payload,
       };
 
     case 'SET_ORDER':

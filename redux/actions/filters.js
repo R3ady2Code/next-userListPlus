@@ -9,6 +9,13 @@ export function setSearchByName(name) {
   };
 }
 
+export function setSearchByTitle(title) {
+  return {
+    type: 'SET_SEARCH_BY_TITLE',
+    payload: title,
+  };
+}
+
 export function setOrder(type) {
   return {
     type: 'SET_ORDER',

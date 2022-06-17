@@ -4,10 +4,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import MainContainer from '../components/MainContainer';
 import User from '../components/User';
 import Loader from '../components/Loader';
+import { Button } from '../components/Button';
+import MyInput from '../components/MyInput';
 
 import { setSortBy, setSearchByName, setOrder } from '../redux/actions/filters';
 import { fetchUsers } from '../redux/actions/users';
-import { Button } from '../components/Button';
 
 function Users() {
   const dispatch = useDispatch();
@@ -60,7 +61,7 @@ function Users() {
           {isLoaded ? (
             <>
               <div className="searchContainer">
-                <input
+                <MyInput
                   type="text"
                   placeholder="Search by name"
                   value={nameForSearch}
@@ -68,11 +69,11 @@ function Users() {
                   onChange={onChangeSearchByName}
                 />
                 <Button onClick={onSearchByName}>Поиск</Button>
-              </div>
 
-              <Button onClick={() => dispatch(setOrder(!order))}>
-                {order ? 'Сортировать по убыванию' : 'Сортировать по возрастанию'}
-              </Button>
+                <Button onClick={() => dispatch(setOrder(!order))}>
+                  {order ? 'Сортировать по убыванию' : 'Сортировать по возрастанию'}
+                </Button>
+              </div>
               {!items.length ? (
                 'Users not found'
               ) : (
