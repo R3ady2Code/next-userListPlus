@@ -43,6 +43,11 @@ const Posts = () => {
   const onChangeSearchByTitle = (e) => {
     e.preventDefault();
     setTitleForSearch(e.target.value);
+    if (!e.target.value) {
+      dispatch(setSearchByTitle(''));
+    } else {
+      onSearchByTitle();
+    }
   };
 
   const onSearchByTitle = () => {
@@ -75,7 +80,6 @@ const Posts = () => {
             onKeyPress={(e) => onKeyDownSearchBytitle(e)}
             onChange={onChangeSearchByTitle}
           />
-          <Button onClick={onSearchByTitle}>Поиск</Button>
           <Button onClick={() => dispatch(setOrder(!order))}>
             {order ? 'Сортировать по убыванию' : 'Сортировать по возрастанию'}
           </Button>

@@ -44,6 +44,11 @@ function Users() {
   const onChangeSearchByName = (e) => {
     e.preventDefault();
     setNameForSearch(e.target.value);
+    if (!e.target.value) {
+      dispatch(setSearchByName(''));
+    } else {
+      onSearchByName();
+    }
   };
 
   const onSearchByName = () => {
@@ -57,23 +62,22 @@ function Users() {
   return (
     <MainContainer>
       <div className="users">
+        <div className="searchContainer">
+          <MyInput
+            type="text"
+            placeholder="Search by name"
+            value={nameForSearch}
+            onKeyPress={(e) => onKeyDownSearchByName(e)}
+            onChange={onChangeSearchByName}
+          />
+
+          <Button onClick={() => dispatch(setOrder(!order))}>
+            {order ? 'Сортировать по убыванию' : 'Сортировать по возрастанию'}
+          </Button>
+        </div>
         <div className="usersTableContainer">
           {isLoaded ? (
             <>
-              <div className="searchContainer">
-                <MyInput
-                  type="text"
-                  placeholder="Search by name"
-                  value={nameForSearch}
-                  onKeyPress={(e) => onKeyDownSearchByName(e)}
-                  onChange={onChangeSearchByName}
-                />
-                <Button onClick={onSearchByName}>Поиск</Button>
-
-                <Button onClick={() => dispatch(setOrder(!order))}>
-                  {order ? 'Сортировать по убыванию' : 'Сортировать по возрастанию'}
-                </Button>
-              </div>
               {!items.length ? (
                 'Users not found'
               ) : (
